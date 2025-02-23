@@ -52,12 +52,12 @@ void swap(double *a, double *b) {
  */
 void print_arr(double* arr, int size) {
     for(int i = 0; i < size; i++)
-        printf("%.0lf ", arr[i]);
+        printf("%lf ", arr[i]);
     printf("\n");
 }
 
 /**
- * Генерирует случайное число типа double в диапозоне от -RAND_MAX до RAND_MAX(распределение не равномерное).
+ * Генерирует псевдослучайное число типа double в диапозоне от -RAND_MAX до RAND_MAX(распределение не равномерное).
  *
  * @return Сгенерированное число.
  */
@@ -84,26 +84,32 @@ double random_double() {
  */
 double *gen_arr(int size, int mode) {
     double* arr = malloc(size * sizeof(*arr));
+    srand(time(NULL));
+
     switch (mode) {
         case 0: {
             for (int i = 0; i < size; i++) {
-                arr[i] = (double) i - size / 2;
+                arr[i] = (double) i;
+
+                if (rand() % 2)
+                    arr[i] *= -1;
             }
 
             return arr;
         }
         case 1: {
-            for (int i = size - 1; i >= 0; i--) {
-                arr[i] = (double) i - size / 2;
+            for (int i = 0; i < size; i++) {
+                arr[i] = (double) (size - i);
+
+                if (rand() % 2)
+                    arr[i] *= -1;
             }
 
             return arr;
         }
         case 2: {
-            srand(time(NULL));
-
             for (int i = 0; i < size; i++) {
-                arr[i] = (double) rand();
+                arr[i] = (double) random_double();
             }
             return arr;
         }
@@ -193,9 +199,9 @@ void ShellSort(int data[], int size) {
 }
 
 int main(void) {
-    srand(time(NULL));
-    for (int i = 0; i < 10; i++) {
-        printf("%lf\n", random_double());
-
-    }
+    int n = 20;
+    double *arr = gen_arr(n, 2);
+    print_arr(arr, n);
+    quick_sort(arr, n);
+    print_arr(arr, n);
 }
