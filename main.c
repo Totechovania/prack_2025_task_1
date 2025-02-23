@@ -188,48 +188,43 @@ void quick_sort(double *arr, int size) {
     quick_sort_rec(arr, size);
 }
 
-
+/**
+ * Сортирует подсписок данного с помощью сотировки вставкой.
+ * Вспомогательная функция для shell_sort.
+ *
+ * @param arr Указатель на начало списка.
+ * @param size Общее число элементов в списке.
+ * @param offset Отступ от начала списка.
+ * @param step Расстояние на котором расположены элементы подсписка.
+ */
 void insertion_sort(double *arr, int size, int offset, int step) {
     for (int i = offset + 1; i < size; i += step) {
         for (int j = i; j > 0; j -= step) {
             if (compare(arr[j], arr[j - 1]) >= 0)
                 continue;
-            swap(arr + j, arr + j -1);
+            swap(arr + j, arr + j - 1);
         }
     }
 }
 
+
+/**
+ * Сортирует список эленментов типа double с помощью сортировки Шелла.
+ *
+ * @param arr Указатель на начало списка.
+ * @param size Количество элементов для сортировки.
+ */
 void shell_sort(double  *arr, int size) {
-    for (int h = size / 2; h > 0; h /= 2) {
-        for (int i = 0; i < h; i++) {
-            double previous = arr[i];
-            for (int j = i; j < size; j += h) {
-
-            }
-
+    for (int step = size / 2; step > 0; step /= 2) {
+        for (int offset = 0; offset < step; offset++) {
+            insertion_sort(arr, size, offset, step);
         }
-
     }
 
 }
 
-void ShellSort(int data[], int size) {
-    for (int interval = size / 2; interval > 0; interval /= 2) {
-        for (int i = interval; i < size; i += 1) {
-            int temp = data[i];
-            int j;
-            for (j = i; j >= interval && data[j - interval] > temp; j -= interval) {
-                data[j] = data[j - interval];
-            }
-            data[j] = temp;
-        }
-    }
-}
 
 int main(void) {
-    int n = 20;
-    double *arr = gen_arr(n, 2);
-    print_arr(arr, n);
-    insertion_sort(arr, n, 0, 1);
-    print_arr(arr, n);
+
+
 }
