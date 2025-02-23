@@ -2,9 +2,18 @@
 #include <math.h>
 #include <time.h>
 #include <stdlib.h>
+#include <string.h>
+#include <assert.h>
 
 static int cmp_cnt, swp_cnt;
 
+/**
+ * Обнуляет значения счётчиков cmp_cnt, swp_cnt.
+ */
+void reset_cnt(){
+    cmp_cnt = 0;
+    swp_cnt = 0;
+}
 
 /**
  * Сравнивает два числа типа double и увеличивает счётчик сравнений cmp_cnt.
@@ -209,7 +218,7 @@ void insertion_sort(double *arr, int size, int offset, int step) {
 
 
 /**
- * Сортирует список эленментов типа double с помощью сортировки Шелла.
+ * Сортирует список эленментов типа double с помощью метода Шелла.
  *
  * @param arr Указатель на начало списка.
  * @param size Количество элементов для сортировки.
@@ -225,6 +234,37 @@ void shell_sort(double  *arr, int size) {
 
 
 int main(void) {
+    int sizes[] = {10, 100, 1000, 10000};
+    char *modes[] = {"ascending", "descending", "random"};
 
+
+
+    for (int i = 0; i < 4; i++){
+        int size = sizes[i];
+
+
+        printf("n = %d:\n", size);
+        for (int mode = 0; mode < 3; mode++) {
+            printf("\t%s:\n", modes[mode]);
+
+            double *qsort_arr = gen_arr(size, mode);
+            double *shell_arr = malloc(size * sizeof(*shell_arr));
+            memcpy(shell_arr, qsort_arr, size * sizeof(*shell_arr));
+
+            reset_cnt();
+            quick_sort(qsort_arr, size);
+            printf("\t\t- Быстая сортировка:\n\t\t\tобменов - %d; сравнений - %d\n", swp_cnt, cmp_cnt);
+            assert(is_sorted(qsort_arr, size));
+
+            reset_cnt();
+            shell_sort(shell_arr, size);
+            printf("\t\t- Метод Шелла:\n\t\t\tобменов - %d; сравнений - %d\n", swp_cnt, cmp_cnt);
+            assert(is_sorted(shell_arr, size));
+
+            free(shell_arr);
+            free(qsort_arr);
+        }
+
+    }
 
 }
