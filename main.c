@@ -7,13 +7,13 @@ static int cmp_cnt, swp_cnt;
 
 
 /**
- * Compares the absolute values of two double numbers and increases cmp_cnt.
+ * Сравнивает два числа типа double и увеличивает счётчик сравнений cmp_cnt.
  *
- * @param a The first number to compare.
- * @param b The second number to compare.
- * @return 1 if |a| > |b|,
- *         0 if |a| = |b|,
- *        -1 if |a| < |b|.
+ * @param a Первое число.
+ * @param b Второе число.
+ * @return 1 если |a| > |b|,
+ *         0 если |a| = |b|,
+ *        -1 если |a| < |b|.
  */
 int compare(double a, double b) {
     cmp_cnt++;
@@ -31,10 +31,10 @@ int compare(double a, double b) {
 }
 
 /**
- * Swaps the values of two variables and increases swp_cnt.
+ * Меняет два значения местами и увеличивает счётчик обменов swp_cnt.
  *
- * @param a
- * @param b
+ * @param a Указатель на первое число.
+ * @param b Указатель на второе число.
  */
 void swap(double *a, double *b) {
     swp_cnt++;
@@ -45,10 +45,10 @@ void swap(double *a, double *b) {
 }
 
 /**
- * Prints elements of given array.
+ * Печатает элементы данного списка.
  *
- * @param arr Pointer to an array to be printed.
- * @param size The number of elements to print.
+ * @param arr Указатель на начало списка.
+ * @param size Количество элементов для печати.
  */
 void print_arr(double* arr, int size) {
     for(int i = 0; i < size; i++)
@@ -56,41 +56,60 @@ void print_arr(double* arr, int size) {
     printf("\n");
 }
 
+/**
+ * Генерирует случайное число типа double в диапозоне от -RAND_MAX до RAND_MAX(распределение не равномерное).
+ *
+ * @return Сгенерированное число.
+ */
+double random_double() {
+    double res = (double) rand() / (double) rand();
+
+    if (rand() % 2)
+        res *= -1;
+
+    return res;
+}
+
 
 /**
- * Generates an array of doubles based on a specified mode.
+ * Генерирует список чисел типа double в зависимости от режима.
  *
- * @param arr Pointer to the array to be filled.
- * @param size The number of elements to generate.
- * @param mode The mode of generation:
- *             0 for ascending order,
- *             1 for descending order,
- *             2 for random values.
+ * @param size Размер генерируемого списка.
+ * @param mode Режим генерации:
+ *             0 - по неубыванию,
+ *             1 - по невозрастанию,
+ *             2 - случайные числа.
+ *
+ * @return Указатель на сгенерированный список.
  */
-void gen_arr(double* arr, int size, int mode) {
+double *gen_arr(int size, int mode) {
+    double* arr = malloc(size * sizeof(*arr));
     switch (mode) {
         case 0: {
             for (int i = 0; i < size; i++) {
-                arr[i] = (double) i;
+                arr[i] = (double) i - size / 2;
             }
 
-            return;
+            return arr;
         }
         case 1: {
             for (int i = size - 1; i >= 0; i--) {
-                arr[i] = (double) i;
+                arr[i] = (double) i - size / 2;
             }
 
-            return;
+            return arr;
         }
         case 2: {
             srand(time(NULL));
+
             for (int i = 0; i < size; i++) {
-                arr[i] = (double) (rand() % 20);
+                arr[i] = (double) rand();
             }
-            return;
+            return arr;
         }
         default: {
+            free(arr);
+
             printf("Error: wrong mode for array generation: %d", mode);
             exit(1);
         }
@@ -99,6 +118,12 @@ void gen_arr(double* arr, int size, int mode) {
 }
 
 
+/**
+ * Вспомогательная рекурсивная функция для быстрой сортировки без инициализации радномайзера(основная функция quik_sort).
+ *
+ * @param arr Указатель на начало списка.
+ * @param size Количество элементов для сортировки.
+ */
 void quick_sort_rec(double *arr, int size) {
     if (size <= 1)
         return;
@@ -128,6 +153,12 @@ void quick_sort_rec(double *arr, int size) {
 }
 
 
+/**
+ * Сортирует список эленментов типа double с помощью алгоритма быстрой сортировки.
+ *
+ * @param arr Указатель на начало списка.
+ * @param size Количество элементов для сортировки.
+ */
 void quick_sort(double *arr, int size) {
     srand(time(NULL));
     quick_sort_rec(arr, size);
@@ -162,13 +193,9 @@ void ShellSort(int data[], int size) {
 }
 
 int main(void) {
-    double* array = malloc(10 * sizeof(*array));
-    gen_arr(array, 10, 2);
-    print_arr(array, 10);
-    quick_sort(array, 10);
-    print_arr(array, 10);
+    srand(time(NULL));
+    for (int i = 0; i < 10; i++) {
+        printf("%lf\n", random_double());
 
-    printf("cmp = %d swp = %d", cmp_cnt, swp_cnt);
-
-    free(array);
+    }
 }
