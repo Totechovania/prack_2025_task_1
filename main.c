@@ -56,6 +56,24 @@ void print_arr(double* arr, int size) {
     printf("\n");
 }
 
+
+/**
+ * Проверяет, что список отсортирован.
+ *
+ * @param arr Указатель на начало списка.
+ * @param size Количество эдементов списка.
+ * @return 1 если список отсортирова,
+ *         2 если список не отсортирован
+ */
+int is_sorted(double *arr, int size) {
+    for (int i = 1; i < size; i++){
+        if (compare(arr[i], arr[i - 1]) < 0)
+            return 0;
+    }
+
+    return 1;
+}
+
 /**
  * Генерирует псевдослучайное число типа double в диапозоне от -RAND_MAX до RAND_MAX(распределение не равномерное).
  *
@@ -168,7 +186,17 @@ void quick_sort_rec(double *arr, int size) {
 void quick_sort(double *arr, int size) {
     srand(time(NULL));
     quick_sort_rec(arr, size);
+}
 
+
+void insertion_sort(double *arr, int size, int offset, int step) {
+    for (int i = offset + 1; i < size; i += step) {
+        for (int j = i; j > 0; j -= step) {
+            if (compare(arr[j], arr[j - 1]) >= 0)
+                continue;
+            swap(arr + j, arr + j -1);
+        }
+    }
 }
 
 void shell_sort(double  *arr, int size) {
@@ -202,6 +230,6 @@ int main(void) {
     int n = 20;
     double *arr = gen_arr(n, 2);
     print_arr(arr, n);
-    quick_sort(arr, n);
+    insertion_sort(arr, n, 0, 1);
     print_arr(arr, n);
 }
