@@ -83,73 +83,6 @@ int is_sorted(double *arr, int size) {
     return 1;
 }
 
-/**
- * Генерирует псевдослучайное число типа double в диапозоне от -RAND_MAX до RAND_MAX(распределение не равномерное).
- *
- * @return Сгенерированное число.
- */
-double random_double() {
-    double res = (double) rand() / (double) rand();
-
-    if (rand() % 2)
-        res *= -1;
-
-    return res;
-}
-
-
-/**
- * Генерирует список чисел типа double в зависимости от режима.
- *
- * @param size Размер генерируемого списка.
- * @param mode Режим генерации:
- *             0 - по неубыванию,
- *             1 - по невозрастанию,
- *             2 - случайные числа.
- *
- * @return Указатель на сгенерированный список.
- */
-double *gen_arr(int size, int mode) {
-    double* arr = malloc(size * sizeof(*arr));
-    srand(time(NULL));
-
-    switch (mode) {
-        case 0: {
-            for (int i = 0; i < size; i++) {
-                arr[i] = (double) i;
-
-                if (rand() % 2)
-                    arr[i] *= -1;
-            }
-
-            return arr;
-        }
-        case 1: {
-            for (int i = 0; i < size; i++) {
-                arr[i] = (double) (size - i);
-
-                if (rand() % 2)
-                    arr[i] *= -1;
-            }
-
-            return arr;
-        }
-        case 2: {
-            for (int i = 0; i < size; i++) {
-                arr[i] = (double) random_double();
-            }
-            return arr;
-        }
-        default: {
-            free(arr);
-
-            printf("Error: wrong mode for array generation: %d", mode);
-            exit(1);
-        }
-    }
-
-}
-
 
 /**
  * Вспомогательная рекурсивная функция для быстрой сортировки без инициализации радномайзера(основная функция quik_sort).
@@ -196,6 +129,73 @@ void quick_sort(double *arr, int size) {
     srand(time(NULL));
     quick_sort_rec(arr, size);
 }
+
+
+/**
+ * Генерирует псевдослучайное число типа double в диапозоне от -RAND_MAX до RAND_MAX(распределение не равномерное).
+ *
+ * @return Сгенерированное число.
+ */
+double random_double() {
+    double res = (double) rand() / ((double) rand() + 1);
+
+    if (rand() % 2)
+        res *= -1;
+
+    return res;
+}
+
+
+/**
+ * Генерирует список чисел типа double в зависимости от режима.
+ *
+ * @param size Размер генерируемого списка.
+ * @param mode Режим генерации:
+ *             0 - по неубыванию,
+ *             1 - по невозрастанию,
+ *             2 - случайные числа.
+ *
+ * @return Указатель на сгенерированный список.
+ */
+double *gen_arr(int size, int mode) {
+    double* arr = malloc(size * sizeof(*arr));
+    srand(time(NULL));
+
+    for (int i = 0; i < size; i++) {
+        arr[i] = (double) random_double();
+    }
+
+    switch (mode) {
+        case 0: {
+            quick_sort(arr, size);
+            assert(is_sorted(arr, size));
+
+            return arr;
+        }
+        case 1: {
+            quick_sort(arr, size);
+            assert(is_sorted(arr, size));
+
+            for (int i = 0; i < size / 2; i++) {
+                swap(arr + i, arr + size - 1 - i);
+            }
+
+            return arr;
+        }
+        case 2: {
+            return arr;
+        }
+        default: {
+            free(arr);
+
+            printf("Error: wrong mode for array generation: %d", mode);
+            exit(1);
+        }
+    }
+
+}
+
+
 
 /**
  * Сортирует подсписок данного с помощью сотировки вставкой.
